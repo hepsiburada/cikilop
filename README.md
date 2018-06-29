@@ -60,7 +60,7 @@ __4. Run it!__
 
 Use the wrapper script (it also uses docker):
 
-1. `curl https://raw.githubusercontent.com/skynyrd/cikilop/master/ciki.sh --output ciki.sh && chmod +x ciki.sh`
+1. `curl https://raw.githubusercontent.com/hepsiburada/cikilop/master/ciki.sh --output ciki.sh && chmod +x ciki.sh`
 
 2. `sudo ./ciki.sh -e ENVIRONMENT -c ABSOLUTE_CONFIG_FILE_PATH -m ABSOLUTE_MIGRATIONS_FOLDER_PATH`
 
