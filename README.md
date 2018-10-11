@@ -73,9 +73,9 @@ To revert, add `-r true`
 or use docker directly:
 
 ```bash
-docker run -e env=local -v ABSOLUTE_CONFIG_FILE_PATH:/app/src/config/config.json -v ABSOLUTE_MIGRATIONS_FOLDER_PATH:/app/src/migrations skynyrd/cikilop
+docker run -e env=local -v ABSOLUTE_CONFIG_FILE_PATH:/app/src/config/config.json -v ABSOLUTE_MIGRATIONS_FOLDER_PATH:/app/src/migrations hepsiburada/cikilop:latest
 
-e.g. docker run -e env=local -v $(pwd)/config.json:/app/src/config/config.json -v $(pwd)/migrations:/app/src/migrations skynyrd/cikilop
+e.g. docker run -e env=local -v $(pwd)/config.json:/app/src/config/config.json -v $(pwd)/migrations:/app/src/migrations hepsiburada/cikilop:latest
 ```
 
 To revert, add `--revert` to `docker run` command
