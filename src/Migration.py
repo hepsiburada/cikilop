@@ -5,9 +5,9 @@ from bson import ObjectId
 
 
 class Migration(object):
-    def __init__(self, migration_item_names: List[str]):
+    def __init__(self, migration_item_names: List[str] = None):
         self.id = ObjectId()
-        self.migration_items = migration_item_names
+        self.migration_items = migration_item_names if migration_item_names is not None else []
         self.created_at = datetime.utcnow()
         self.updated_at = datetime.utcnow()
         self.is_reverted = False
