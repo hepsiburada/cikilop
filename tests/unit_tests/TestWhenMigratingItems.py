@@ -17,10 +17,18 @@ class TestWhenMigratingItems(unittest.TestCase):
         migrate_them_all(cls.mock_repo, [cls.parsed1, cls.parsed2, cls.parsed3])
 
     def test_repo_should_be_called(self):
-        args, kwargs = self.mock_repo.create.call_args
-        called_mig = args[0]
-        self.assertTrue(called_mig.migration_items[0], "02-b.py")
-        self.assertTrue(called_mig.migration_items[1], "03-c.py")
+        # Create called once
+        self.mock_repo.create.assert_called_once()
+        created_mig = self.mock_repo.create.call_args[0][0]
+        # object is mutated in place, so it has 2 items now
+        self.assertEqual(len(created_mig.migration_items), 2)
+
+        # Update called for each migration
+        self.assertEqual(self.mock_repo.update_migration.call_count, 2)
+        
+        # Check last update has all items
+        last_call_args = self.mock_repo.update_migration.call_args[0][0]
+        self.assertEqual(last_call_args["migration_items"], ["02-b.py", "03-c.py"])
 
     def test_parsed1_should_not_be_migrated(self):
         self.parsed1.migration.success.assert_not_called()
@@ -35,6 +43,7 @@ class TestWhenMigratingItems(unittest.TestCase):
     def prepare_mocks(cls):
         cls.mock_repo = MigrationRepository(cfg=MagicMock(), client=MagicMock())
         cls.mock_repo.create = MagicMock()
+        cls.mock_repo.update_migration = MagicMock()
         cls.mock_repo.get_already_done_items = MagicMock(return_value=["01-a.py"])
 
         cls.parsed1 = ParsedMigrationItem(FakeUserMigrationFile(), "01-a.py", 1)

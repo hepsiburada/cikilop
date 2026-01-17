@@ -71,17 +71,23 @@ def migrate_them_all(mig_repo, parsed_migration_items):
         .where(lambda pmig: pmig.file_name not in already_done_mig_files) \
         .order_by(lambda pmig: pmig.order).to_list()
 
-    files_to_be_migrated = query(migs_to_be_applied).select(lambda pm: pm.file_name).to_list()
+    if len(migs_to_be_applied) == 0:
+        print_green("All the migration files already applied, skipping...")
+        return
+
+    # Create a new migration document to track this batch
+    migration = Migration()
+    mig_repo.create(migration)
+
     while len(migs_to_be_applied) > 0:
         parsed_migration = migs_to_be_applied.pop(0)
         print_green(f"Migration file {parsed_migration.file_name} is going to be applied...")
+        
         parsed_migration.migration.success(get_db_instance())
-
-    if len(files_to_be_migrated) > 0:
-        migration = Migration(files_to_be_migrated)
-        mig_repo.create(migration)
-    else:
-        print_green("All the migration files already applied, skipping...")
+        
+        # Incremental save
+        migration.migration_items.append(parsed_migration.file_name)
+        mig_repo.update_migration(migration.to_document())
 
 
 def get_parsed_migration_items() -> List[ParsedMigrationItem]:
